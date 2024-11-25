@@ -4,7 +4,7 @@ namespace ForumMotor_13BC_A.Models
 {
     public class User : IdentityUser
     {
-        string? VezetkNev {  get; set; }
-        string? KeresztNev {  get; set; }
+        public string? VezetekNev {  get; set; }
+        public string? KeresztNev {  get; set; }
     }
 }
