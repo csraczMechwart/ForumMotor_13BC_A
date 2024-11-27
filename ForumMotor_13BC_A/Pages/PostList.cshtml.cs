@@ -10,21 +10,26 @@ using ForumMotor_13BC_A.Models;
 
 namespace ForumMotor_13BC_A.Pages
 {
-    public class IndexModel : PageModel
+    public class PostListModel : PageModel
     {
         private readonly ForumMotor_13BC_A.Data.ApplicationDbContext _context;
 
-        public IndexModel(ForumMotor_13BC_A.Data.ApplicationDbContext context)
+        public PostListModel(ForumMotor_13BC_A.Data.ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public IList<Category> Category { get;set; } = default!;
+        [BindProperty(SupportsGet = true)]
+        public int TopicId { get; set; }
+
+        public IList<Post> Post { get;set; } = default!;
 
         public async Task OnGetAsync()
         {
-            Category = await _context.Categories
-                .Include(c => c.User).ToListAsync();
+            Post = await _context.Posts
+                .Where(x => x.TopicId == TopicId)
+                .Include(p => p.Topic)
+                .Include(p => p.User).ToListAsync();
         }
     }
 }
