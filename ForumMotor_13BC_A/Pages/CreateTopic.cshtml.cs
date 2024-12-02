@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ForumMotor_13BC_A.Data;
 using ForumMotor_13BC_A.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace ForumMotor_13BC_A.Pages
 {
     public class CreateTopicModel : PageModel
     {
         private readonly ForumMotor_13BC_A.Data.ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public CreateTopicModel(ForumMotor_13BC_A.Data.ApplicationDbContext context)
+        public CreateTopicModel(ForumMotor_13BC_A.Data.ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [BindProperty(SupportsGet = true)]
@@ -43,7 +46,9 @@ namespace ForumMotor_13BC_A.Pages
             }*/
 
 
-
+            Topic.CategoryId = CategoryId;
+            Topic.UserId = _userManager.GetUserId(User);
+            Topic.CreateDate = DateTime.Now;
             _context.Topics.Add(Topic);
             await _context.SaveChangesAsync();
 

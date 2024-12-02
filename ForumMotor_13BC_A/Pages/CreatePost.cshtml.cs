@@ -7,19 +7,25 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ForumMotor_13BC_A.Data;
 using ForumMotor_13BC_A.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace ForumMotor_13BC_A.Pages
 {
     public class CreatePostModel : PageModel
     {
         private readonly ForumMotor_13BC_A.Data.ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public CreatePostModel(ForumMotor_13BC_A.Data.ApplicationDbContext context)
+        public CreatePostModel(ForumMotor_13BC_A.Data.ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
         [BindProperty(SupportsGet = true)]
         public int TopicId { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public int PostId { get; set; } = default!;
 
 
         public IActionResult OnGet()
@@ -40,6 +46,9 @@ namespace ForumMotor_13BC_A.Pages
                 return Page();
             }*/
             Post.TopicId = TopicId;
+            Post.CreateDate = DateTime.Now;
+            Post.UserId = _userManager.GetUserId(User);
+            Post.Reply = PostId;
             _context.Posts.Add(Post);
             await _context.SaveChangesAsync();
 
